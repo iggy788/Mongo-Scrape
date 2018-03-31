@@ -21,7 +21,7 @@ app.set("views", path.join(__dirname, "/app/views"));
 // ===========================================================
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-	extended: true
+    extended: true
 }));
 
 // Set Static Path
@@ -30,12 +30,12 @@ app.use(express.static(__dirname + "/app/public"));
 
 const exphbs = require("express-handlebars");
 app.engine(
-	"handlebars",
-	exphbs({
-		defaultLayout: "main",
-		layoutsDir: path.join(__dirname, "app/views/layouts"),
-		partialsDir: path.join(__dirname, "app/views/partials")
-	})
+    "handlebars",
+    exphbs({
+        defaultLayout: "main",
+        layoutsDir: path.join(__dirname, "app/views/layouts"),
+        partialsDir: path.join(__dirname, "app/views/partials")
+    })
 );
 
 // Parses our HTML and helps us find elements
@@ -45,51 +45,52 @@ var request = require("request");
 
 // First, tell the console what server.js is doing
 console.log("\n***********************************\n" +
-	"Grabbing every article headline and link\n" +
-	"from New York Times webdev board:" +
-	"\n***********************************\n");
+    "Grabbing every article headline and link\n" +
+    "from New York Times webdev board:" +
+    "\n***********************************\n");
 
-app.get("/scrape", function (req, res) {
-	request("https://www.nytimes.com/", function (
-		error,
-		response,
-		html
-	) {
-		// Make an empty array for saving our scraped info
-		var $ = cheerio.load(html);
+app.get("/scrape", function(req, res) {});
+request("https://www.nytimes.com/", function(
+    error,
+    response,
+    html
+) {
+    // Make an empty array for saving our scraped info
+    var $ = cheerio.load(html);
 
-		// Make an empty array for saving our scraped info
-		var results = [];
+    // Make an empty array for saving our scraped info
+    var results = [];
 
-		// With cheerio, find each h4-tag with the class "headline-link" and loop through the results
-		$(".story-heading").each(function (i, element) {
-			// Save the text of the h4-tag as "title"
-			var title = $(element).text();
-				// .find("a")
+    // With cheerio, find each h4-tag with the class "headline-link" and loop through the results
+    $(".story").each(function(i, element) {
+        // Save the text of the h4-tag as "title"
+        var title = $(element)
+            .find("a").text();
 
 
-			// .split("\n")[0];
-			// Find the h4 tag's parent a-tag, and save it's href value as "link"
-			var link = $(element)
-				.children()
-				.attr("href");
+        // .split("\n")[0];
+        // Find the h4 tag's parent a-tag, and save it's href value as "link"
+        var link = $(element)
+            .find("a")
+            .attr("href");
 
-			// var summary = $(element)
-			// 	.find("p")
-			// 	.text();
-			// Make an object with data we scraped for this h4 and push it to the results array
-			results.push({
-				title: title,
-				link: link
-			});
-		});
-		// After looping through each element found, log the results to the console
-		db.scrapedData.insert(results);
-		res.json(results);
-	});
-	// Log the results once you've looped through each of the elements found with cheerio
-	console.log(results);
+        var summary = $(element)
+            .find(".summary").text();
+        // Make an object with data we scraped for this h4 and push it to the results array
+        results.push({
+            title,
+            link,
+            summary
+        });
+    });
+    // After looping through each element found, log the results to the console
+    // db.scrapedData.insert(results);
+    // res.json(results);
+    console.log(results);
 });
+// Log the results once you've looped through each of the elements found with cheerio
+
+
 // Route 2
 // =======
 // When you visit this route, the server will
@@ -110,6 +111,6 @@ require("./app/routes/htmlRoutes")(app);
 
 // Listener
 // ===========================================================
-app.listen(PORT, function () {
-	console.log("App listening on PORT " + PORT);
+app.listen(PORT, function() {
+    console.log("App listening on PORT " + PORT);
 });

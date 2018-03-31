@@ -19,7 +19,7 @@ app.get("/", function(req, res) {
 // Make request to grab the HTML from `awwards's` clean website section
 app.get("/scrape", function(req, res) {
 	request("https://www.theonion.com/", function(error, response, html) {
-		// Make an empty array for saving our scraped info
+		// Load the HTML into cheerio
 		var $ = cheerio.load(html);
 		// Make an empty array for saving our scraped info
 		var results = [];

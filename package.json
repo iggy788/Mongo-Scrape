@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/iggy788/Mongo-Scrape#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.15.1",
@@ -25,7 +26,8 @@
     "express-handlebars": "^3.0.0",
     "express-mvc-generator": "^2.2.4",
     "mongoose": "^5.0.12",
-    "nodemon": "^1.17.2",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.17.3",
     "npm": "^5.8.0",
     "request": "^2.85.0",
     "sorted-object": "^2.0.1"

@@ -4,6 +4,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var path = require("path");
 
 // Our scraping tools
 // =============================================================
@@ -31,6 +32,7 @@ app.use(
 // Set Static Path
 // ===========================================================
 app.use(express.static(__dirname + "/app/public"));
+app.use(express.static(path.join(__dirname, "/public")));
 
 var exphbs = require("express-handlebars");
 app.engine(

@@ -20,10 +20,17 @@ p {
     overflow: hidden;
     background-size: 50%;
     background-position: center;
-    background-image: url('../img/newspaper.jpg');
+    background: url(/assets/img/newspaper.jpg);
     background-repeat: no-repeat;
     height: 400px;
     width: 100%;
+    background-size: cover;
+}
+
+h1.text-center {
+    background-color: #2C3E4A;
+    color: white;
+    font-size: 90px;
 }
 
 .panel-heading.row {
@@ -31,12 +38,25 @@ p {
     margin-left: 0%;
 }
 
+.panel-heading {
+    height: 50px;
+}
+
 .panel-primary {
-    height: 135px;
+    height: 160px;
 }
 
 #savenote {
     display: block;
+}
+
+.panel-body {
+    padding: 0px;
+    margin-left: 10px;
+}
+
+.btn {
+    line-height: 5px;
 }
 
 

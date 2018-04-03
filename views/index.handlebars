@@ -1,19 +1,12 @@
 <!-- Main container -->
 <div class="container">
-	{{!-- <div class="jumbotron" style="background-color: #20315A ; color: white;"></div>
-	<div class="row">
-			<div class="col-md-12">
-				<div class="jumbotron">
-				</div>
-			</div>
-		</div> --}}
-	<!-- Jumbotron for Title -->
-	<div class="jumbotron" style="background: url(./public/assets/img/newspaper.jpg); background-size: cover;">
+	<div class="jumbotron"">
 		<div class="overlay">
 		</div>
 		<h1 class="text-center">
 			<strong>
-				<i class="fa fa-newspaper-o"></i> New York Times Article Search</strong>
+				<i class="fa fa-newspaper-o"></i> New York Times
+				Article Search</strong>
 		</h1>
 	</div>
 	<div class="row">
@@ -34,16 +27,16 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-12>">
+						<div class="col-xs-12">
 							<div class="panel-body">
-								<p>Brief Summary of Article: <br>{{this.summary}}</p>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12>">
-							<div class="panel-body">
-								<p>Go to Story: <br>{{this.link}}</p>
+								<div>
+									<strong>Brief Summary of Article:</strong>
+									<br>{{this.summary}}
+								</div>
+								<div>
+									<strong>Go to Story:</strong>
+									<br>{{this.link}}
+								</div>
 							</div>
 						</div>
 					</div>

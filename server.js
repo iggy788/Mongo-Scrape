@@ -31,7 +31,7 @@ app.use(
 
 // Set Static Path
 // ===========================================================
-app.use(express.static(__dirname + "/app/public"));
+app.use(express.static(__dirname + "/public"));
 app.use(express.static(path.join(__dirname, "/public")));
 
 var exphbs = require("express-handlebars");
@@ -53,6 +53,7 @@ app.use("/", routes);
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrapeMongo";
 var db = mongoose.connection;
+
 
 mongoose.connect(
 	"mongodb://heroku_pgw06cvt:h4tndnndkpu36u5boek8dalkil@ds127139.mlab.com:27139/heroku_pgw06cvt"

@@ -1,5 +1,4 @@
-var express = require('express');
-var router = express.Router();
+var router = require("express").Router();
 var request = require('request');
 var cheerio = require('cheerio');
 var mongoose = require('mongoose');
@@ -194,6 +193,10 @@ router.get('/articles/:id', function (req, res) {
 // Create a new note or replace an existing note
 router.post('/articles/:id', function (req, res) {
 	// Create a new note and pass the req.body to the entry
+	db.Note.create(req.body)
+		.then(function (dbNote) {
+
+		})
 	var newNote = new Note(req.body);
 	// And save the new note the db
 	newNote.save(function (error, doc) {

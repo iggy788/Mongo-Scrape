@@ -1,8 +1,19 @@
-var router = require("express").Router();
-var productRouter = require("./apiRoutes");
-var htmlRouter = require("./htmlRoutes");
+// Dependencies
+const express = require('express');
+const router = express.Router();
+const db = require('../models');
+const productRouter = require('./apiRoutes');
+const htmlRouter = require('./htmlRoutes');
 
-router.use("/api/products", productRouter);
-router.use("/", htmlRouter);
+router.use('/api/products', productRouter);
+router.use('/', htmlRouter);
 
-module.exports = router;
+// Route to Display index.handlebars with Articles
+// router.get('/', (req,res) => {
+//   db.Article
+//     .find({})
+//     .then(articles => res.render('index', {articles}))
+//     .catch(err=> res.json(err));
+// });
+
+// module.exports = router;

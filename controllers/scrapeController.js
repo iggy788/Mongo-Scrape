@@ -1,13 +1,13 @@
-var router = require("express").Router();
-var request = require('request');
-var cheerio = require('cheerio');
-var mongoose = require('mongoose');
-var path = require('path');
+const router = require('express').Router();
+const request = require('request');
+const cheerio = require('cheerio');
+const mongoose = require('mongoose');
+const path = require('path');
 // Set mongoose to leverage built in JavaScript ES6 Promises
 mongoose.Promise = Promise;
-var db = require('../models');
-var Note = require('../models/Note');
-var Article = require('../models/Article');
+const db = require('../models');
+const Note = require('../models/Note');
+const Article = require('../models/Article');
 
 // First, tell the console what server.js is doing
 console.log(
@@ -17,58 +17,44 @@ console.log(
 	'\n***********************************\n'
 );
 
+// Index Routes
+// =============================================================================
 //Renders the index page
 router.get('/', function (req, res) {
 	res.render('index');
 });
 
-// This will get the scraped articles and saved in db and show them in list.
-router.get('/savedarticles', function (req, res) {
-	// Grab every doc in the Articles array
-	db.Article.find({}, function (error, doc) {
-		// Log any errors
-		if (error) {
-			console.log(error);
-		}
-		// Or send the doc to the browser as a json object
-		else {
-			var hbsArticleObject = {
-				articles: doc
-			};
-			res.render('savedarticles', hbsArticleObject);
-		}
-	});
-});
-
+// Scrape Routes shown on index.handlebars
+// =============================================================================
 // Scrapes the New York Times home page for articles
 router.post('/scrape', function (req, res) {
 	// First, we grab the body of the html with request
 	request('http://www.nytimes.com/', function (error, response, html) {
 		// Then, we load that into cheerio and save it to $ for a shorthand selector
-		var $ = cheerio.load(html);
-		// Make emptry array for temporarily saving and showing scraped Articles.
-		var scrapedArticles = {};
+		let $ = cheerio.load(html);
+		// Make empty array for temporarily saving and showing scraped Articles.
+		let scrapedArticles = {};
 
 		// Now, we grab every h2 & summary class within an article tag:
 		$('article').each(function (i, element) {
 			// Save an empty result object
-			var result = {};
+			let result = {};
 
 			// Find the Text of every title in the article tag
 			result.title = $(this)
 				.children('h2')
 				.text();
 			result.summary = $(this)
-				.children(".summary")
+				.children('.summary')
 				.text();
 			// Only find the summary and link if the title is not blank or not null
-			if (result.title != "" && result.title != null && result.summary != "" && result.summary != null) {
+			if (result.title != '' && result.title != null && result.summary != '' && result.summary != null) {
 				result.link = $(this)
-					.children("h2")
-					.children("a")
-					.attr("href");
-				console.log("What's the result summary? " + result.summary);
-				// Store All Contents of the Article in a variable
+					.children('h2')
+					.children('a')
+					.attr('href');
+				console.log('What\'s the result summary? ' + result.summary);
+				// Store All Contents of the Article
 				scrapedArticles[i] = result;
 				//Checks to see if the article is already in the database, and if it isn't then it adds it
 				db.Article.findOne(
@@ -77,7 +63,7 @@ router.post('/scrape', function (req, res) {
 					},
 					function(err, doc) {
 						if (doc == null) {
-							var entry = new Article(result);
+							let entry = new Article(result);
 
 							entry.save(function(err, doc) {
 								if (err) {
@@ -87,7 +73,7 @@ router.post('/scrape', function (req, res) {
 								}
 							});
 						} else {
-							console.log("Already in DB");
+							console.log('Already in DB');
 						}
 					}
 				);
@@ -96,24 +82,25 @@ router.post('/scrape', function (req, res) {
 		console.log('All Scraped Articles: ');
 		console.log(scrapedArticles);
 
-		var hbsArticleObject = {
+		const hbsArticleObject = {
 			articles: scrapedArticles
 		};
 		res.render('index', hbsArticleObject);
 	});
 });
 
-
+// Article Routes for index.handlebars
+// =============================================================================
 // Route for saving/updating an Article's associated Note
-router.post('/save', function (req, res) {
+router.post('/save/', function (req, res) {
 	console.log('This is the title: ' + req.body.summary);
 
-	var newArticleObject = {};
+	const newArticleObject = {};
 	newArticleObject.title = req.body.title;
 	newArticleObject.summary = req.body.summary;
 	newArticleObject.link = req.body.link;
 
-	var entry = new Article(newArticleObject);
+	const entry = new Article(newArticleObject);
 	console.log('Save this Article: ' + entry);
 	// Now, save that entry to the db
 	entry.save(function (err, doc) {
@@ -128,15 +115,32 @@ router.post('/save', function (req, res) {
 
 	res.redirect('/savedarticles');
 });
+// Article Routes for savedarticles.handlebars
+// =============================================================================
+// Show this on savedarticles.handlebars
+router.get('/savedarticles', function (req, res) {
+	// Grab every doc in the Articles array
+	db.Article.find({}, function (err, doc) {
+		// Log any errors
+		if (err) {
+			console.log(err);
+		}
+		// Or send the doc to the browser as a json object
+		else {
+			const hbsArticleObject = {
+				articles: doc
+			};
+			res.render('savedarticles', hbsArticleObject);
+		}
+	});
+});
 
-// Route for deleting an Article's associated Note
+// Route for deleting an Article's associated Note in index.handlebars
 router.get('/delete/:id', function (req, res) {
-	console.log('ID is getting read for delete' + req.params.id);
-	console.log('Able to activate delete function.');
-
-	db.Article.findOneAndRemove({
-		_id: req.params.id
-	}, function (err, offer) {
+	db.Article
+		.findOneAndRemove({
+			_id: req.params.id
+		}, function (err, offer) {
 		if (err) {
 			console.log('Not able to delete:' + err);
 		} else {
@@ -146,31 +150,10 @@ router.get('/delete/:id', function (req, res) {
 	});
 });
 
-// Route for grabbing a specific Article by id, populate it with it's note
-router.get('/notes/:id', function (req, res) {
-	console.log('ID is getting read for delete' + req.params.id);
-	console.log('Able to activate delete function.');
 
-	db.Note.findOneAndRemove({
-		_id: req.params.id
-	}, function (err, doc) {
-		if (err) {
-			console.log('Not able to delete:' + err);
-		} else {
-			console.log('Able to delete, Yay');
-		}
-		res.send(doc);
-	});
-});
 
-// //displays article links
-// router.get('/articles', function(req, res) {
-//   db.Article.find(function(err, doc) {
-//     articlesObject = {articles: doc};
-//     res.render('index', articlesObject);
-//   });
-// });
-
+// Notes Routes
+// =============================================================================
 // This will grab an article by it's ObjectId
 router.get('/articles/:id', function (req, res) {
 	console.log('ID is getting read' + req.params.id);
@@ -190,6 +173,23 @@ router.get('/articles/:id', function (req, res) {
 		});
 });
 
+// Route for grabbing a specific Article by id, populate it with it's note in in index.handlebars
+router.get('/notes/:id', function (req, res) {
+	console.log('ID is getting read for delete' + req.params.id);
+	console.log('Able to activate delete function.');
+
+	db.Note.findOne({
+		_id: req.params.id
+	}, function (err, doc) {
+		if (err) {
+			console.log('Not able to delete:' + err);
+		} else {
+			console.log('Able to delete, Yay');
+		}
+		res.send(doc);
+	});
+});
+
 // Create a new note or replace an existing note
 router.post('/articles/:id', function (req, res) {
 	// Create a new note and pass the req.body to the entry
@@ -197,7 +197,7 @@ router.post('/articles/:id', function (req, res) {
 		.then(function (dbNote) {
 
 		})
-	var newNote = new Note(req.body);
+	const newNote = new Note(req.body);
 	// And save the new note the db
 	newNote.save(function (error, doc) {
 		// Log any errors

@@ -30,6 +30,9 @@
     "nodemon": "^1.17.3",
     "npm": "^5.8.0",
     "request": "^2.85.0",
+    "request-promise": "^4.2.2",
+    "request-promise-any": "^1.0.5",
+    "serve-favicon": "^2.5.0",
     "sorted-object": "^2.0.1"
   }
 }

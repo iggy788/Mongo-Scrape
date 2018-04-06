@@ -1,75 +1,87 @@
 // Dependencies
 // =============================================================
-var express = require("express");
-var bodyParser = require("body-parser");
-var logger = require("morgan");
-var mongoose = require("mongoose");
-var path = require("path");
-
-// Our scraping tools
-// =============================================================
-// Parses our HTML and helps us find elements
-var cheerio = require("cheerio");
-// Makes HTTP request for HTML page
-var request = require("request");
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const exphbs = require('express-handlebars');
+const path = require('path');
+const logger = require('morgan');
+// const favicon = require('serve-favicon');
 
 // Sets up the Express App
 // =============================================================
-var app = express();
-var PORT = process.env.PORT || 3000;
+const app = express();
+
+// Setup MongoDB & Heroku
+// ===========================================================
+const config = require('./config/database');
+mongoose.Promise = Promise;
+mongoose
+	.connect(config.database)
+	.then(result => {
+		console.log(
+			`Connected to database '${result.connections[0].name}' on ${
+				result.connections[0].host
+			}:${result.connections[0].port}`
+		);
+	})
+	.catch(err => console.log('There was an error with your connection:', err));
+
+// Middleware
+// ===========================================================
+//setting up favicon middleware
+// app.use(favicon(path.join(__dirname, 'public', 'assets/img/favicon.ico')))
+
+// Morgan Middleware
+app.use(logger('dev'));
 
 // Body Parser Middleware
-// ===========================================================
-// Use morgan and body parser with our app
-app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(
-	bodyParser.urlencoded({
-		extended: true
-	})
+    bodyParser.urlencoded({
+        extended: false
+    })
 );
 
-// Set Static Path
-// ===========================================================
-app.use(express.static(__dirname + "/public"));
-app.use(express.static(path.join(__dirname, "/public")));
-
-var exphbs = require("express-handlebars");
+// Handlebars Middleware
 app.engine(
-	"handlebars",
-	exphbs({
-		defaultLayout: "main"
-	})
+    'handlebars',
+    exphbs({
+        defaultLayout: 'main'
+    })
 );
-app.set("view engine", "handlebars");
+app.set('view engine', 'handlebars');
+
+// Set Static Directories
+// ===========================================================
+app.use(express.static(path.join(__dirname, '/public')));
+app.use('/articles', express.static(path.join(__dirname, 'public')));
+app.use('/notes', express.static(path.join(__dirname, 'public')));
 
 // Import Routes
 // ===========================================================
-var routes = require("./controllers/scrapeController.js");
-app.use("/", routes);
+// const index = require('./routes/index')
+// const articles = require('./routes/articles')
+// const notes = require('./routes/notes')
+// const scrape = require('./routes/scrape')
 
-// Setup MongoDB on Heroku
-// ===========================================================
-// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scrapeMongo";
-var db = mongoose.connection;
+// app.use('/', index)
+// app.use('/articles', articles);
+// app.use('/notes', notes);
+// app.use('/scrape', scrape);
+
+var routes = require('./controllers/scrapeController.js');
+app.use('/', routes);
 
 
-mongoose.connect(
-	"mongodb://heroku_pgw06cvt:h4tndnndkpu36u5boek8dalkil@ds127139.mlab.com:27139/heroku_pgw06cvt"
-);
-// Show any mongoose errors
-db.on("error", function(error) {
-  console.log("Mongoose Error: ", error);
-});
-
-// Once logged in to the db through mongoose, log a success message
-db.once("open", function() {
-  console.log("Mongoose connection successful.");
-});
+// const db = mongoose.connection;
+// mongoose.connect(
+// 	'mongodb://heroku_pgw06cvt:h4tndnndkpu36u5boek8dalkil@ds127139.mlab.com:27139/heroku_pgw06cvt'
+// );
 
 // Listener
 // ===========================================================
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, function() {
-	console.log("App listening on PORT " + PORT);
+    console.log(`App listening on http://localhost:'${PORT}`);
 });

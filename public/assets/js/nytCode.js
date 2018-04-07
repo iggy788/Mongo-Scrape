@@ -1,10 +1,4 @@
-// index.handlebars functions
-// =============================================================================
 
-
-
-
-// savedarticles.handlebars functions
 // =============================================================================
 // When you Click ARTICLE NOTES this will display the notes
 $(document).on("click", "#modalbutton", function () {
@@ -41,7 +35,7 @@ $(document).on("click", "#modalbutton", function () {
     });
 });
 
-
+// =============================================================================
 // When you Click SAVE NOTE in the Modal this will save the notes
 $(document).on("click", "#savenote", function() {
   // Grab the id associated with the article from the submit button
@@ -67,7 +61,7 @@ $(document).on("click", "#savenote", function() {
   $("#bodyinput").val("");
 });
 
-
+// =============================================================================
 // When you Click DELETE FROM SAVED in the Modal this will save the notes
 $(document).on("click", "#deletenote", function() {
   // Grab the id associated with the note

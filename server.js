@@ -29,8 +29,6 @@ mongoose
 
 // Middleware
 // ===========================================================
-//setting up favicon middleware
-// app.use(favicon(path.join(__dirname, 'public', 'assets/img/favicon.ico')))
 
 // Morgan Middleware
 app.use(logger('dev'));
@@ -58,26 +56,10 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.use('/articles', express.static(path.join(__dirname, 'public')));
 app.use('/notes', express.static(path.join(__dirname, 'public')));
 
-// Import Routes
+// Routes
 // ===========================================================
-// const index = require('./routes/index')
-// const articles = require('./routes/articles')
-// const notes = require('./routes/notes')
-// const scrape = require('./routes/scrape')
-
-// app.use('/', index)
-// app.use('/articles', articles);
-// app.use('/notes', notes);
-// app.use('/scrape', scrape);
-
 var routes = require('./controllers/scrapeController.js');
 app.use('/', routes);
-
-
-// const db = mongoose.connection;
-// mongoose.connect(
-// 	'mongodb://heroku_pgw06cvt:h4tndnndkpu36u5boek8dalkil@ds127139.mlab.com:27139/heroku_pgw06cvt'
-// );
 
 // Listener
 // ===========================================================

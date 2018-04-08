@@ -117,6 +117,7 @@ router.post('/save/', function (req, res) {
 });
 // Article Routes for savedarticles.handlebars
 // =============================================================================
+
 // Show this on savedarticles.handlebars
 router.get('/savedarticles', function (req, res) {
 	// Grab every doc in the Articles array
@@ -149,8 +150,6 @@ router.get('/delete/:id', function (req, res) {
 		res.redirect('/savedarticles');
 	});
 });
-
-
 
 // Notes Routes
 // =============================================================================
@@ -227,5 +226,5 @@ router.post('/articles/:id', function (req, res) {
 		}
 	});
 });
-// Export routes for server.js to use.
+// Export Routes
 module.exports = router;

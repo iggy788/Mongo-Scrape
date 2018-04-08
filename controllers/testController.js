@@ -1,3 +1,4 @@
+// NOTHING IS USED HERE JUST TESTING A NEW CONTROLLER
 const db = require('../models');
 
 module.exports = {
@@ -55,14 +56,3 @@ module.exports = {
 		});
 	}
 };
-
-// same thing as
-/*
-router.get('/articles/:id', function (req, res) {
-	console.log('ID is getting read' + req.params.id);
-
-	// Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-	db.Article.findOne({
-			'_id': req.params.id
-		})
-		*/
